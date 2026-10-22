@@ -1,0 +1,37 @@
+name: openmemory
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: openmemory
+      POSTGRES_PASSWORD: openmemory
+      POSTGRES_DB: openmemory
+    volumes:
+      - openmemory_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openmemory"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  server:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://openmemory:openmemory@db:5432/openmemory
+      TRANSPORT: http
+      PORT: 3333
+      # Strongly recommended when exposed beyond localhost.
+      OPENMEMORY_TOKEN: ${OPENMEMORY_TOKEN:-}
+      # Optional: set to use real embeddings instead of the local fallback.
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    ports:
+      - "3333:3333"
+
+volumes:
+  openmemory_db:
