@@ -1,6 +1,6 @@
 {
   "name": "openmemory-mcp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Open, self-hosted, vendor-neutral memory layer for AI coding agents over MCP",
   "license": "MIT",
   "type": "module",

@@ -32,6 +32,11 @@ services:
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
     ports:
       - "3333:3333"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3333/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
 volumes:
   openmemory_db:
